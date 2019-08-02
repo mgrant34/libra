@@ -53,77 +53,78 @@ struct Args {
 
 fn main() -> std::io::Result<()> {
     network_launch::new();
-    let _logger = set_default_global_logger(false /* async */, None);
-    crash_handler::setup_panic_handler();
-    let args = Args::from_args();
+    
+    // let _logger = set_default_global_logger(false /* async */, None);
+    // crash_handler::setup_panic_handler();
+    // let args = Args::from_args();
 
-    let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
+    // let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
 
-    let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
+    // let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
 
-    let mut client_proxy = ClientProxy::new(
-        &args.host,
-        &args.port,
-        &args.validator_set_file,
-        &faucet_account_file,
-        args.sync,
-        args.faucet_server,
-        args.mnemonic_file,
-    )
-    .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
+    // let mut client_proxy = ClientProxy::new(
+    //     &args.host,
+    //     &args.port,
+    //     &args.validator_set_file,
+    //     &faucet_account_file,
+    //     args.sync,
+    //     args.faucet_server,
+    //     args.mnemonic_file,
+    // )
+    // .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
 
-    // Test connection to validator
-    let test_ret = client_proxy.test_validator_connection();
+    // // Test connection to validator
+    // let test_ret = client_proxy.test_validator_connection();
 
-    if let Err(e) = test_ret {
-        println!(
-            "Not able to connect to validator at {}:{}, error {:?}",
-            args.host, args.port, e
-        );
-        return Ok(());
-    }
-    let cli_info = format!("Connected to validator at: {}:{}", args.host, args.port);
-    print_help(&cli_info, &commands);
-    println!("Please, input commands: \n");
+    // if let Err(e) = test_ret {
+    //     println!(
+    //         "Not able to connect to validator at {}:{}, error {:?}",
+    //         args.host, args.port, e
+    //     );
+    //     return Ok(());
+    // }
+    // let cli_info = format!("Connected to validator at: {}:{}", args.host, args.port);
+    // print_help(&cli_info, &commands);
+    // println!("Please, input commands: \n");
 
-    let config = Config::builder()
-        .history_ignore_space(true)
-        .completion_type(CompletionType::List)
-        .auto_add_history(true)
-        .build();
-    let mut rl = Editor::<()>::with_config(config);
-    loop {
-        let readline = rl.readline("libra% ");
-        match readline {
-            Ok(line) => {
-                let params = parse_cmd(&line);
-                if params.is_empty() {
-                    continue;
-                }
-                match alias_to_cmd.get(&params[0]) {
-                    Some(cmd) => cmd.execute(&mut client_proxy, &params),
-                    None => match params[0] {
-                        "quit" | "q!" => break,
-                        "help" | "h" => print_help(&cli_info, &commands),
-                        "" => continue,
-                        x => println!("Unknown command: {:?}", x),
-                    },
-                }
-            }
-            Err(ReadlineError::Interrupted) => {
-                println!("CTRL-C");
-                break;
-            }
-            Err(ReadlineError::Eof) => {
-                println!("CTRL-D");
-                break;
-            }
-            Err(err) => {
-                println!("Error: {:?}", err);
-                break;
-            }
-        }
-    }
+    // let config = Config::builder()
+    //     .history_ignore_space(true)
+    //     .completion_type(CompletionType::List)
+    //     .auto_add_history(true)
+    //     .build();
+    // let mut rl = Editor::<()>::with_config(config);
+    // loop {
+    //     let readline = rl.readline("libra% ");
+    //     match readline {
+    //         Ok(line) => {
+    //             let params = parse_cmd(&line);
+    //             if params.is_empty() {
+    //                 continue;
+    //             }
+    //             match alias_to_cmd.get(&params[0]) {
+    //                 Some(cmd) => cmd.execute(&mut client_proxy, &params),
+    //                 None => match params[0] {
+    //                     "quit" | "q!" => break,
+    //                     "help" | "h" => print_help(&cli_info, &commands),
+    //                     "" => continue,
+    //                     x => println!("Unknown command: {:?}", x),
+    //                 },
+    //             }
+    //         }
+    //         Err(ReadlineError::Interrupted) => {
+    //             println!("CTRL-C");
+    //             break;
+    //         }
+    //         Err(ReadlineError::Eof) => {
+    //             println!("CTRL-D");
+    //             break;
+    //         }
+    //         Err(err) => {
+    //             println!("Error: {:?}", err);
+    //             break;
+    //         }
+    //     }
+    // }
 
     Ok(())
 }
