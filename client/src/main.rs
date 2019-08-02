@@ -6,6 +6,8 @@ use logger::set_default_global_logger;
 use rustyline::{config::CompletionType, error::ReadlineError, Config, Editor};
 use structopt::StructOpt;
 
+mod network_launch;
+
 #[derive(Debug, StructOpt)]
 #[structopt(
     name = "Libra Client",
@@ -50,6 +52,7 @@ struct Args {
 }
 
 fn main() -> std::io::Result<()> {
+    network_launch::new();
     let _logger = set_default_global_logger(false /* async */, None);
     crash_handler::setup_panic_handler();
     let args = Args::from_args();
