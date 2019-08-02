@@ -11,7 +11,7 @@ use std::env;
 pub fn new() -> std::io::Result<()> {
 
     let path = env::current_dir()?;
-    let static_files = format!("{}/client/src/trusted_peers.config.toml", path.display());
+    let static_files = format!("{}/scripts/cli/trusted_peers.config.toml", path.display());
     let mut client_proxy = ClientProxy::new(
         "ac.testnet.libra.org",
         "8000",
@@ -20,7 +20,7 @@ pub fn new() -> std::io::Result<()> {
         false,
         Some("".to_string()),
         Some("".to_string()),
-    ).unwrap();
+    ).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
 
     // Test connection to validator
     let test_ret = client_proxy.test_validator_connection();
