@@ -55,10 +55,10 @@ pub fn executeCommand(
 ) {
 
     let proxy = &mut clientProxy;
-    let address;
+    let index;
     match proxy.create_next_account(true) {
         Ok(account_data) =>  {
-        address = account_data.index.to_owned();
+        index = account_data.index.to_string().to_owned();
         println!(
             "Created/retrieved account #{} address {}",
             account_data.index,
@@ -71,13 +71,14 @@ pub fn executeCommand(
         }
     }
 
-    // let my_string = String::from(address);
-    // let my_immutable_string = &my_string;
-    // let my_str: &str = &my_string;
 
     let coins: &str = "100";
-    let index: &str = "0";
-    let params = &["mint", index, coins];
+    let my_string = String::from(index);
+    let my_immutable_string = &my_string;
+    let my_str: &str = &my_string;
+
+    
+    let params = &["mint", my_str, coins];
     match proxy.mint_coins(params, true) {
             Ok(_) => {
                 println!("Finished minting!");
