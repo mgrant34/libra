@@ -52,7 +52,7 @@ pub fn new() -> Option<ClientProxy> {
 
 pub fn executeCommand(
     mut clientProxy: ClientProxy
-) {
+) -> String {
 
     let proxy = &mut clientProxy;
     let index;
@@ -71,18 +71,19 @@ pub fn executeCommand(
         }
     }
 
-
     let coins: &str = "100";
     let my_string = String::from(index);
     let my_immutable_string = &my_string;
     let my_str: &str = &my_string;
-
     
     let params = &["mint", my_str, coins];
     match proxy.mint_coins(params, true) {
-            Ok(_) => {
-                println!("Finished minting!");
-            }
-            Err(e) => report_error("Error minting coins", e),
+        Ok(_) => {
+            println!("Finished minting!");
+            "Finished Minting"
         }
+        Err(e) => report_error("Error minting coins", e),
+    }
+
+    "Error"
 }
