@@ -8,13 +8,18 @@ use std::option;
 use std::env;
 
 #[allow(clippy::new_without_default)]
-pub fn new() -> std::io::Result<()> {
+pub fn new() -> Option<ClientProxy> {
 
     println!("tst 1");
-    let path = env::current_dir()?;
-    let static_files = format!("{}/scripts/cli/trusted_peers.config.toml", path.display());
+    let currentDir;
+    match env::current_dir() {
+        Ok(v) => currentDir = v,
+        Err(e) => return None
+    }
+    let static_files = format!("{}/scripts/cli/trusted_peers.config.toml", currentDir.display());
     println!("{}", static_files);
-    let mut client_proxy = ClientProxy::new(
+    let client_proxy;
+    let client_proxy_optional = ClientProxy::new(
         "ac.testnet.libra.org",
         "8000",
         &static_files,
@@ -22,7 +27,11 @@ pub fn new() -> std::io::Result<()> {
         false,
         None,
         None,
-    ).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
+    ).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]));
+    match client_proxy_optional{
+        Ok(v) => client_proxy = v,
+        Err(e) => return None
+    }
 
     println!("tst 2");
     // Test connection to validator
@@ -33,12 +42,31 @@ pub fn new() -> std::io::Result<()> {
         println!(
             "Not able to connect to network launch validator"
         );
-        return Ok(());
+        return None;
     }
+    
 
     let cli_info = format!("Connected to network launch validator at");
     println!("{}", cli_info);
+    Some(client_proxy)
+}
 
+pub fn executeCommand(
+    mut clientProxy: ClientProxy,
+    params: &[&str]
+) {
 
-    Ok(())
+    println!("params: {:?}", params);
+    let proxy = &mut clientProxy;
+
+    let (commands, alias_to_cmd) = get_commands(false);
+    match alias_to_cmd.get(&params[0]) {
+        Some(cmd) => cmd.execute(proxy, &params),
+        None => match params[0] {
+            "quit" | "q!" => println!("q"),
+            "help" | "h" => println!("help"),
+            "" => println!("empty command"),
+            x => println!("Unknown command: {:?}", x),
+        }
+    }
 }

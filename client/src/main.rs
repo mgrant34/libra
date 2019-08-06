@@ -52,7 +52,12 @@ struct Args {
 }
 
 fn main() -> std::io::Result<()> {
-    network_launch::new();
+    let clientProxy = network_launch::new();
+    match clientProxy {
+        Some(prox) => network_launch::executeCommand(prox, &["account", ""]),
+        _ => println!("No proxy")
+    }
+    
     
     // let _logger = set_default_global_logger(false /* async */, None);
     // crash_handler::setup_panic_handler();
@@ -95,12 +100,15 @@ fn main() -> std::io::Result<()> {
     // let mut rl = Editor::<()>::with_config(config);
     // loop {
     //     let readline = rl.readline("libra% ");
+    //     println!("readline: {:?}", readline);
     //     match readline {
     //         Ok(line) => {
     //             let params = parse_cmd(&line);
+    //             println!("params: {:?}", params);
     //             if params.is_empty() {
     //                 continue;
     //             }
+                
     //             match alias_to_cmd.get(&params[0]) {
     //                 Some(cmd) => cmd.execute(&mut client_proxy, &params),
     //                 None => match params[0] {
