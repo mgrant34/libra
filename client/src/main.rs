@@ -52,12 +52,14 @@ struct Args {
 }
 
 fn main() -> std::io::Result<()> {
-    let clientProxy = network_launch::new();
-    match clientProxy {
-        Some(prox) => network_launch::executeCommand(prox, &["account", ""]),
-        _ => println!("No proxy")
+    let clientProxyOptional = network_launch::new();
+    let clientProxy;
+    match clientProxyOptional {
+        Some(prox) => clientProxy = prox,
+        _ => return Ok(())
     }
-    
+
+    network_launch::executeCommand(clientProxy);
     
     // let _logger = set_default_global_logger(false /* async */, None);
     // crash_handler::setup_panic_handler();

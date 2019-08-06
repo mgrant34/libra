@@ -44,7 +44,6 @@ pub fn new() -> Option<ClientProxy> {
         );
         return None;
     }
-    
 
     let cli_info = format!("Connected to network launch validator at");
     println!("{}", cli_info);
@@ -52,21 +51,47 @@ pub fn new() -> Option<ClientProxy> {
 }
 
 pub fn executeCommand(
-    mut clientProxy: ClientProxy,
-    params: &[&str]
+    mut clientProxy: ClientProxy
 ) {
 
-    println!("params: {:?}", params);
     let proxy = &mut clientProxy;
-
-    let (commands, alias_to_cmd) = get_commands(false);
-    match alias_to_cmd.get(&params[0]) {
-        Some(cmd) => cmd.execute(proxy, &params),
-        None => match params[0] {
-            "quit" | "q!" => println!("q"),
-            "help" | "h" => println!("help"),
-            "" => println!("empty command"),
-            x => println!("Unknown command: {:?}", x),
-        }
+    let accountData;
+    match proxy.create_next_account(true) {
+        Ok(account_data) =>  {
+        accountData = account_data;
+        println!(
+            "Created/retrieved account #{} address {}",
+            account_data.index,
+            hex::encode(account_data.address)
+        );
+        },
+        Err(e) => report_error("Error creating account", e),
     }
+
+    let address = &mut accountData.address.short_str();
+    let my_string = String::from(address);
+    let my_immutable_string = &my_string; //This is a &String type
+    let my_str: &str = &my_string;
+
+    let coins: &str = "100.00";
+    let params = &["mint", my_str, coins];
+    match proxy.mint_coins(params, true) {
+            Ok(_) => {
+                println!("Finished minting!");
+            }
+            Err(e) => report_error("Error minting coins", e),
+        }
+
+    // let (commands, alias_to_cmd) = get_commands(false);
+    // match alias_to_cmd.get(&params[0]) {
+    //     Some(cmd) => {
+    //         cmd.execute(proxy, &params);
+    //     },
+    //     None => match params[0] {
+    //         "quit" | "q!" => println!("q"),
+    //         "help" | "h" => println!("help"),
+    //         "" => println!("empty command"),
+    //         x => println!("Unknown command: {:?}", x),
+    //     }
+    // }
 }
