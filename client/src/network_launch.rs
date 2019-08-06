@@ -55,43 +55,33 @@ pub fn executeCommand(
 ) {
 
     let proxy = &mut clientProxy;
-    let accountData;
+    let address;
     match proxy.create_next_account(true) {
         Ok(account_data) =>  {
-        accountData = account_data;
+        address = account_data.index.to_owned();
         println!(
             "Created/retrieved account #{} address {}",
             account_data.index,
             hex::encode(account_data.address)
         );
         },
-        Err(e) => report_error("Error creating account", e),
+        Err(e) => {
+            report_error("Error creating account", e);
+            return;
+        }
     }
 
-    let address = &mut accountData.address.short_str();
-    let my_string = String::from(address);
-    let my_immutable_string = &my_string; //This is a &String type
-    let my_str: &str = &my_string;
+    // let my_string = String::from(address);
+    // let my_immutable_string = &my_string;
+    // let my_str: &str = &my_string;
 
-    let coins: &str = "100.00";
-    let params = &["mint", my_str, coins];
+    let coins: &str = "100";
+    let index: &str = "0";
+    let params = &["mint", index, coins];
     match proxy.mint_coins(params, true) {
             Ok(_) => {
                 println!("Finished minting!");
             }
             Err(e) => report_error("Error minting coins", e),
         }
-
-    // let (commands, alias_to_cmd) = get_commands(false);
-    // match alias_to_cmd.get(&params[0]) {
-    //     Some(cmd) => {
-    //         cmd.execute(proxy, &params);
-    //     },
-    //     None => match params[0] {
-    //         "quit" | "q!" => println!("q"),
-    //         "help" | "h" => println!("help"),
-    //         "" => println!("empty command"),
-    //         x => println!("Unknown command: {:?}", x),
-    //     }
-    // }
 }
