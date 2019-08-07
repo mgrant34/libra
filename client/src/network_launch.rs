@@ -8,7 +8,7 @@ use std::option;
 use std::env;
 
 #[allow(clippy::new_without_default)]
-pub fn new() -> Option<ClientProxy> {
+pub fn newNetwork() -> Option<ClientProxy> {
 
     println!("tst 1");
     let currentDir;

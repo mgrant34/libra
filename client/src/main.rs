@@ -1,7 +1,7 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
- use client::{client_proxy::ClientProxy, commands::*, network_launch};
+use client::{client_proxy::ClientProxy, commands::*, network_launch::*};
 use logger::set_default_global_logger;
 use rustyline::{config::CompletionType, error::ReadlineError, Config, Editor};
 use structopt::StructOpt;
@@ -50,14 +50,14 @@ struct Args {
 }
 
 fn main() -> std::io::Result<()> {
-    let clientProxyOptional = network_launch::new();
+    let clientProxyOptional = newNetwork();
     let clientProxy;
     match clientProxyOptional {
         Some(prox) => clientProxy = prox,
         _ => return Ok(())
     }
 
-    network_launch::executeCommand(clientProxy);
+    executeCommand(clientProxy);
     
     // let _logger = set_default_global_logger(false /* async */, None);
     // crash_handler::setup_panic_handler();
