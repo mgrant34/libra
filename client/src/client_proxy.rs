@@ -105,6 +105,7 @@ pub struct ClientProxy {
 
 impl ClientProxy {
     /// Construct a new TestClient.
+    #[allow(clippy::new_without_default)]
     pub fn new(
         host: &str,
         ac_port: &str,
