@@ -7,7 +7,6 @@ use rustyline::{config::CompletionType, error::ReadlineError, Config, Editor};
 use std::option;
 use std::env;
 
-#[allow(clippy::new_without_default)]
 pub fn newNetwork() -> Option<ClientProxy> {
 
     println!("tst 1");
