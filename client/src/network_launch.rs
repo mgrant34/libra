@@ -1,7 +1,7 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use client::{client_proxy::ClientProxy, commands::*};
+use crate::{commands::*, client_proxy::ClientProxy};
 use logger::set_default_global_logger;
 use rustyline::{config::CompletionType, error::ReadlineError, Config, Editor};
 use std::option;
@@ -67,7 +67,7 @@ pub fn executeCommand(
         },
         Err(e) => {
             report_error("Error creating account", e);
-            return;
+            return "".to_string();
         }
     }
 
@@ -80,10 +80,10 @@ pub fn executeCommand(
     match proxy.mint_coins(params, true) {
         Ok(_) => {
             println!("Finished minting!");
-            "Finished Minting"
+            return "Finished Minting".to_string();
         }
         Err(e) => report_error("Error minting coins", e),
     }
 
-    "Error"
+    "Error".to_string()
 }

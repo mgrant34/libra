@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::utils;
-use client_lib::{client_proxy::ClientProxy, commands};
+use client_lib::{client_proxy::ClientProxy, commands, network_launch};
 use std::{
     collections::HashMap,
     io::{self, Write},

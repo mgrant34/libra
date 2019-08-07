@@ -1,7 +1,6 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-#![deny(missing_docs)]
 //! Libra Client
 //!
 //! Client (binary) is the CLI tool to interact with Libra validator.
@@ -60,6 +59,3 @@ impl AccountData {
         }
     }
 }
-
-/// Default imports
-pub use crate::{network_launch};

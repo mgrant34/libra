@@ -1,12 +1,10 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use client::{client_proxy::ClientProxy, commands::*};
+ use client::{client_proxy::ClientProxy, commands::*, network_launch};
 use logger::set_default_global_logger;
 use rustyline::{config::CompletionType, error::ReadlineError, Config, Editor};
 use structopt::StructOpt;
-
-mod network_launch;
 
 #[derive(Debug, StructOpt)]
 #[structopt(
