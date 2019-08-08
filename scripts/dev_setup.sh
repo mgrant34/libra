@@ -43,26 +43,6 @@ else
 	exit 1
 fi
 
-cat <<EOF
-Welcome to Libra!
-
-This script will download and install the necessary dependencies needed to
-build Libra Core. This includes:
-	* Rust (and the necessary components, e.g. rust-fmt, clippy)
-	* CMake, protobuf, go (for building protobuf)
-
-If you'd prefer to install these dependencies yourself, please exit this script
-now with Ctrl-C.
-
-EOF
-
-printf "Proceed with installing necessary dependencies? (y/N) > "
-read -e input
-if [[ "$input" != "y"* ]]; then
-	echo "Exiting..."
-	exit 0
-fi
-
 # Install Rust
 echo "Installing Rust......"
 if rustup --version &>/dev/null; then
